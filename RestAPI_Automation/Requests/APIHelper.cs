@@ -1,51 +1,54 @@
-﻿using Newtonsoft.Json;
+﻿using System.Net.Mime;
+using Newtonsoft.Json;
 using RestSharp;
 
 namespace RestAPI_Automation.Requests;
 
-public class APIHelper<T>
+public static class APIHelper
 {
-    public string baseURL = "https://reqres.in/ ";
+    public static RestClient restClient = new RestClient(Constants.baseURL);
 
     // concatenating base url and endpoint
-    public string SetUrl(string endpoint)
-    {
-        string url = Path.Combine(baseURL, endpoint);
-        return url;
-    }
-
-    // method returns RestClient value
-    public RestClient RestClient()
-    {
-        var client = new RestClient(baseURL);
-        return client;
-    }
+    public static string SetUrl(string endpoint) => Path.Combine(Constants.baseURL, endpoint);
 
     // POST request ulr, header and parameters
-    public RestRequest CreatePostRequest(string payload, string endpoint)
+    public static T CreatePostRequest<T>(string payload)
     {
-        var restRequest = new RestRequest(endpoint, Method.Post);
-        restRequest.AddHeader("Accept", "application/json");
-        restRequest.AddParameter("application/json", payload, ParameterType.RequestBody);
-        return restRequest;
+        RestRequest restRequest = new RestRequest(SetUrl(""), Method.Post);
+        restRequest.AddHeader("HttpRequestHeader.Accept", MediaTypeNames.Application.Json);
+        restRequest.AddParameter(MediaTypeNames.Application.Json, payload, ParameterType.RequestBody);
+
+        return GetContent<T>(restClient.Execute(restRequest));
+        // return restRequest;
     }
 
     // GET request url and header
-    public RestRequest CreateGetRequest(string endpoint)
+    public static T CreateGetRequest<T>(string endpoint)
     {
-        var restRequest = new RestRequest(SetUrl(endpoint), Method.Get);
-        restRequest.AddHeader("Accept", "application/json");
-        return restRequest;
+        var restRequest = new RestRequest(SetUrl(endpoint));
+        restRequest.AddHeader("HttpRequestHeader.Accept", MediaTypeNames.Application.Json);
+
+        return GetContent<T>(restClient.Execute(restRequest));
+    }
+
+    // the same as CreateGetRequest<T> class, but returns serialized data
+    // is needed for task1 to return status code description
+    public static RestResponse GetRequest(string endpoint)
+    {
+        var restRequest = new RestRequest(SetUrl(endpoint));
+        restRequest.AddHeader("HttpRequestHeader.Accept", MediaTypeNames.Application.Json);
+
+        return GetReponse(restRequest);
     }
 
     // method returns response
-    public RestResponse GetReponse(RestRequest request)
+    public static RestResponse GetReponse(RestRequest request)
     {
-        return RestClient().Execute(request);
+        return restClient.Execute(request);
     }
 
     // method returns deserialize response data
-    public UserData GetContent<UserData>(RestResponse response)
+    public static UserData GetContent<UserData>(RestResponse response)
     {
         var content = response.Content;
         UserData userDataObject = JsonConvert.DeserializeObject<UserData>(content);
