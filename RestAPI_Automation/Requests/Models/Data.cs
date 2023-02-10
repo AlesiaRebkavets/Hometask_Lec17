@@ -1,10 +1,16 @@
-﻿namespace RestAPI_Automation.Requests;
+﻿using Newtonsoft.Json;
+
+namespace RestAPI_Automation.Requests;
 
 public class Data
 {
-    public int id { get; set; }
-    public string email { get; set; }
-    public string first_name { get; set; }
-    public string last_name { get; set; }
-    public Uri avatar { get; set; }
+    public int Id { get; set; }
+    public string Email { get; set; }
+    
+    [JsonProperty("first_name")] 
+    public string FirstName { get; set; }
+
+    [JsonProperty("last_name")]
+    public string LastName { get; set; }
+    public Uri Avatar { get; set; }
 }

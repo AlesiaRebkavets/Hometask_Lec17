@@ -8,6 +8,6 @@ public class DataAndSupport
 
 public class Support
 {
-    public Uri url { get; set; }
-    public string text { get; set; }
+    public Uri Url { get; set; }
+    public string Text { get; set; }
 }

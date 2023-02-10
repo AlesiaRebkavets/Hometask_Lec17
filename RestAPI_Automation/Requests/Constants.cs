@@ -2,6 +2,6 @@
 
 public class Constants
 {
-    public const string baseURL = "https://reqres.in/api/users";
-    public const string getUersEndpoint = "?page=2";
+    public const string BaseUrl = "https://reqres.in/api/users";
+    public const string GetUsersEndpoint = "?page=2";
 }

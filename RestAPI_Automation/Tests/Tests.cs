@@ -1,4 +1,6 @@
 ﻿using System.Diagnostics;
+using System.Net;
+using Newtonsoft.Json;
 using NUnit.Framework;
 using RestAPI_Automation.Requests;
 
@@ -10,29 +12,32 @@ public class Tests
     [Test]
     public void Task1()
     {
+        var userToCreate = new UserToCreate("Mike", "Team leader");
+
         // getting the list of users
-        var content1 = APIHelper.CreateGetRequest<CreatedUsers>(Constants.getUersEndpoint);
+        var content1 = APIHelper.CreateGetRequest<CreatedUsers>(Constants.GetUsersEndpoint);
 
         // verifying that there are correct data in the response
-        Assert.AreEqual(2, content1.page);
-        Assert.AreEqual("Michael", content1.Data[0].first_name);
+        Assert.AreEqual(2, content1.Page);
+        Assert.AreEqual("Michael", content1.Data[0].FirstName);
 
         // creating random id and verifying that it is successfully created
-        var content2 = APIHelper.CreatePostRequest<UserToCreate>(Payloads.payloadTask1);
-        Assert.AreEqual("Mike", content2.name);
-        Assert.AreEqual(280, content2.id);
+        var content2 = APIHelper.CreatePostRequest<UserToCreate>(JsonConvert.SerializeObject(userToCreate));
+        Assert.AreEqual("Mike", content2.Name);
+        Assert.AreEqual("Team leader", content2.Job);
 
         // sending request with new id
-        var response = APIHelper.GetRequest($"?id={content2.id}");
+        var response = APIHelper.GetRequest($"?id={content2.Id}");
 
         // verifying that we got "Not Found" response
-        Assert.AreEqual("Not Found", response.StatusDescription);
+        Assert.AreEqual(HttpStatusCode.NotFound, response.StatusCode);
     }
 
     // Создать юзера и проверить ответ, в том числе время создания (между отправкой запроса и получением ответа)
     [Test]
     public void Task2()
     {
+        var userToCreate = new UserToCreate("Mike", "Team leader");
         // using stopwatch to verify time duration
         var stopwatch = new Stopwatch();
 
@@ -40,7 +45,7 @@ public class Tests
         stopwatch.Start();
 
         // creating a new user
-        var content = APIHelper.CreatePostRequest<UserToCreate>(Payloads.payloadTask2);
+        var content = APIHelper.CreatePostRequest<UserToCreate>(JsonConvert.SerializeObject(userToCreate));
 
         // stopping stopwatch after receiving response
         stopwatch.Stop();
@@ -49,9 +54,8 @@ public class Tests
         var elapsedTime = stopwatch.Elapsed.Milliseconds;
 
         // verifying that we got correct data in the response
-        Assert.AreEqual("Mike", content.name);
-        Assert.AreEqual("Team leader", content.job);
-        Assert.AreEqual(222, content.id);
+        Assert.AreEqual("Mike", content.Name);
+        Assert.AreEqual("Team leader", content.Job);
         Assert.That(elapsedTime < 1000);
     }
 
@@ -59,19 +63,19 @@ public class Tests
     [Test]
     public void Task3()
     {
-        var content1 = APIHelper.CreateGetRequest<CreatedUsers>(Constants.getUersEndpoint);
+        var content1 = APIHelper.CreateGetRequest<CreatedUsers>(Constants.GetUsersEndpoint);
 
         // saving information received for the user
         Data userData = content1.Data[5];
 
         // getting information of a single user
-        var content2 = APIHelper.CreateGetRequest<DataAndSupport>($"/{userData.id.ToString()}");
+        var content2 = APIHelper.CreateGetRequest<DataAndSupport>($"/{userData.Id.ToString()}");
 
         // verifying that user data are the same
-        Assert.AreEqual(userData.first_name, content2.Data.first_name);
-        Assert.AreEqual(userData.last_name, content2.Data.last_name);
-        Assert.AreEqual(userData.email, content2.Data.email);
-        Assert.AreEqual(userData.id, content2.Data.id);
-        Assert.AreEqual(userData.avatar, content2.Data.avatar);
+        Assert.AreEqual(userData.FirstName, content2.Data.FirstName);
+        Assert.AreEqual(userData.LastName, content2.Data.LastName);
+        Assert.AreEqual(userData.Email, content2.Data.Email);
+        Assert.AreEqual(userData.Id, content2.Data.Id);
+        Assert.AreEqual(userData.Avatar, content2.Data.Avatar);
     }
 }

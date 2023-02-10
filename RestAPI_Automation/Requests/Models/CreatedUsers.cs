@@ -1,10 +1,15 @@
-﻿namespace RestAPI_Automation.Requests;
+﻿using Newtonsoft.Json;
+
+namespace RestAPI_Automation.Requests;
 
 public class CreatedUsers
 {
-    public int page { get; set; }
-    public int per_page { get; set; }
-    public int total { get; set; }
-    public int total_pages { get; set; }
+    public int Page { get; set; }
+
+    [JsonProperty("per_page")] public int PerPage { get; set; }
+
+    public int Total { get; set; }
+
+    [JsonProperty("total_pages")] public int TotalPages { get; set; }
     public List<Data> Data { get; set; }
 }
