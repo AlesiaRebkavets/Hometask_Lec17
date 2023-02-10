@@ -23,8 +23,8 @@ public class Tests
 
         // creating random id and verifying that it is successfully created
         var content2 = APIHelper.CreatePostRequest<UserToCreate>(JsonConvert.SerializeObject(userToCreate));
-        Assert.AreEqual("Mike", content2.Name);
-        Assert.AreEqual("Team leader", content2.Job);
+        Assert.AreEqual(userToCreate.Name, content2.Name);
+        Assert.AreEqual(userToCreate.Job, content2.Job);
 
         // sending request with new id
         var response = APIHelper.GetRequest($"?id={content2.Id}");
@@ -54,8 +54,8 @@ public class Tests
         var elapsedTime = stopwatch.Elapsed.Milliseconds;
 
         // verifying that we got correct data in the response
-        Assert.AreEqual("Mike", content.Name);
-        Assert.AreEqual("Team leader", content.Job);
+        Assert.AreEqual(userToCreate.Name, content.Name);
+        Assert.AreEqual(userToCreate.Job, content.Job);
         Assert.That(elapsedTime < 1000);
     }
 
