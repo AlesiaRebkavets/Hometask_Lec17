@@ -6,4 +6,16 @@
         <Nullable>enable</Nullable>
     </PropertyGroup>
 
+    <ItemGroup>
+      <PackageReference Include="microsoft.codecoverage" Version="17.5.0-preview-20221221-03" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.5.0-preview-20221221-03" />
+      <PackageReference Include="Newtonsoft.Json" Version="13.0.3-beta1" />
+      <PackageReference Include="NUnit" Version="3.13.3" />
+      <PackageReference Include="NUnit3TestAdapter" Version="4.3.1" />
+      <PackageReference Include="RestSharp" Version="109.0.0-preview.1" />
+      <PackageReference Include="Selenium.WebDriver" Version="4.8.0" />
+      <PackageReference Include="Selenium.WebDriver.ChromeDriver" Version="108.0.5359.7100" />
+      <PackageReference Include="SpecFlow" Version="4.0.16-beta" />
+    </ItemGroup>
+
 </Project>
